@@ -7,14 +7,14 @@
     "exported_at": "2026-04-09T10:57:49+03:00",
     "name": "Gregtech New Horizons 2.8.X pterodactyl",
     "author": "looordi@orkenstein.com",
-    "description": "GTNH egg for versions 2.8.0+ (Java 17\u201325).\r\nComes with an update script that handles updates easily.\r\nJust change the version and reinstall.\r\nMake sure to back up before reinstalling!\r\n\r\nMore info:\r\nhttps:\/\/wiki.gtnewhorizons.com\/wiki\/Server_Setup#Server_Update\r\n\r\nhttps:\/\/www.gtnewhorizons.com\/downloads\/",
+    "description": "GTNH egg for versions 2.8.0+ (Java 17–25).\r\nComes with an update script that handles updates easily.\r\nJust change the version and reinstall.\r\nMake sure to back up before reinstalling!\r\n\r\nMore info:\r\nhttps://wiki.gtnewhorizons.com/wiki/Server_Setup#Server_Update\r\n\r\nhttps://www.gtnewhorizons.com/downloads/",
     "features": [
         "eula"
     ],
     "docker_images": {
-        "Java25": "ghcr.io\/parkervcp\/yolks:java_25",
-        "Java21": "ghcr.io\/parkervcp\/yolks:java_21",
-        "Java17": "ghcr.io\/parkervcp\/yolks:java_17"
+        "Java25": "ghcr.io/parkervcp/yolks:java_25",
+        "Java21": "ghcr.io/parkervcp/yolks:java_21",
+        "Java17": "ghcr.io/parkervcp/yolks:java_17"
     },
     "file_denylist": [],
     "startup": "java -Xmx{{SERVER_MAXRAM}} -Dfml.readTimeout=180 @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui",
@@ -26,7 +26,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# Gregtech New Horizons V2.8.X Install Script\n\n: \"${GTVERSION:=2.8.4}\"  # default if not set\nGTNH_ZIP_FILE=\"GT_New_Horizons_${GTVERSION}_Server_Java_17-25.zip\"\n\n# Ensure server directory exists\nif [ ! -d \/mnt\/server ]; then\n  mkdir -p \/mnt\/server\nfi\n\nBASE_DIR=\"\/mnt\/server\"\nBACKUP_DIR=\"$BASE_DIR\/installtemp\"\n\n# Backup JourneyMapServer if it exists\nif [ -d \"$BASE_DIR\/config\/JourneyMapServer\" ]; then\n  echo \"Backing up JourneyMapServer to $BACKUP_DIR...\"\n  mkdir -p \"$BACKUP_DIR\"\n  cp -r \"$BASE_DIR\/config\/JourneyMapServer\" \"$BACKUP_DIR\/\"\nelse\n  echo \"No JourneyMapServer directory found to back up.\"\nfi\n\n# Delete the old files\/folders\necho \"Deleting old files and folders...\"\nrm -rf \\\n  \"$BASE_DIR\/config\" \\\n  \"$BASE_DIR\/libraries\" \\\n  \"$BASE_DIR\/mods\" \\\n  \"$BASE_DIR\/lwjgl3ify-forgePatches.jar\" \\\n  \"$BASE_DIR\/java9args.txt\"\n\n# Install dependencies\nif command -v apk >\/dev\/null 2>&1; then\n  apk --no-cache add curl unzip\nelif command -v apt >\/dev\/null 2>&1; then\n  apt update && apt install -y curl unzip\nfi\n\n# Download and extract GTNH server\ncd \"$BASE_DIR\"\necho \"Downloading and extracting $GTNH_ZIP_FILE...\"\ncurl -L -o \"$GTNH_ZIP_FILE\" \"https:\/\/downloads.gtnewhorizons.com\/ServerPacks\/$GTNH_ZIP_FILE\"\nunzip -n \"$GTNH_ZIP_FILE\"\nrm -f \"$GTNH_ZIP_FILE\" *.md *.bat\n\nchmod +x startserver-java9.sh\n\n# Restore backed-up files\nif [ -d \"$BACKUP_DIR\" ]; then\n  echo \"Restoring files from installtemp...\"\n  cp -r \"$BACKUP_DIR\/JourneyMapServer\" \"$BASE_DIR\/config\"\nelse\n  echo \"No installtemp folder found \u2014 skipping restore.\"\nfi\n\necho \"Installation process is completed\"",
+            "script": "#!/bin/ash\n# Gregtech New Horizons V2.8.X Install Script\n\n: \"${GTVERSION:=2.8.4}\"  # default if not set\nGTNH_ZIP_FILE=\"GT_New_Horizons_${GTVERSION}_Server_Java_17-25.zip\"\n\n# Ensure server directory exists\nif [ ! -d /mnt/server ]; then\n  mkdir -p /mnt/server\nfi\n\nBASE_DIR=\"/mnt/server\"\nBACKUP_DIR=\"$BASE_DIR/installtemp\"\n\n# Backup JourneyMapServer if it exists\nif [ -d \"$BASE_DIR/config/JourneyMapServer\" ]; then\n  echo \"Backing up JourneyMapServer to $BACKUP_DIR...\"\n  mkdir -p \"$BACKUP_DIR\"\n  cp -r \"$BASE_DIR/config/JourneyMapServer\" \"$BACKUP_DIR/\"\nelse\n  echo \"No JourneyMapServer directory found to back up.\"\nfi\n\n# Delete the old files/folders\necho \"Deleting old files and folders...\"\nrm -rf \\\n  \"$BASE_DIR/config\" \\\n  \"$BASE_DIR/libraries\" \\\n  \"$BASE_DIR/mods\" \\\n  \"$BASE_DIR/lwjgl3ify-forgePatches.jar\" \\\n  \"$BASE_DIR/java9args.txt\"\n\n# Install dependencies\nif command -v apk >/dev/null 2>&1; then\n  apk --no-cache add curl unzip\nelif command -v apt >/dev/null 2>&1; then\n  apt update && apt install -y curl unzip\nfi\n\n# Download and extract GTNH server\ncd \"$BASE_DIR\"\necho \"Downloading and extracting $GTNH_ZIP_FILE...\"\ncurl -L -o \"$GTNH_ZIP_FILE\" \"https://downloads.gtnewhorizons.com/ServerPacks/$GTNH_ZIP_FILE\"\nunzip -n \"$GTNH_ZIP_FILE\"\nrm -f \"$GTNH_ZIP_FILE\" *.md *.bat\n\nchmod +x startserver-java9.sh\n\n# Restore backed-up files\nif [ -d \"$BACKUP_DIR\" ]; then\n  echo \"Restoring files from installtemp...\"\n  cp -r \"$BACKUP_DIR/JourneyMapServer\" \"$BASE_DIR/config\"\nelse\n  echo \"No installtemp folder found — skipping restore.\"\nfi\n\necho \"Installation process is completed\"",
             "container": "alpine:3.4",
             "entrypoint": "ash"
         }
@@ -66,7 +66,7 @@
             "name": "Hardcore Mode",
             "description": "Enable Hardcore Mode for the world",
             "env_variable": "SERVER_HARDCORE",
-            "default_value": "0",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean",
@@ -104,9 +104,9 @@
         },
         {
             "name": "Server Whitelist",
-            "description": "Enable\/Disable Server Whitelist",
+            "description": "Enable/Disable Server Whitelist",
             "env_variable": "SERVER_WHITELIST",
-            "default_value": "1",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean",
@@ -124,9 +124,9 @@
         },
         {
             "name": "Query Status",
-            "description": "Set server query status enabled\/disabled",
+            "description": "Set server query status enabled/disabled",
             "env_variable": "SERVER_QUERY",
-            "default_value": "0",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean",
@@ -136,7 +136,7 @@
             "name": "Rcon Status",
             "description": "Enable or disable server rcon",
             "env_variable": "SERVER_RCON",
-            "default_value": "0",
+            "default_value": "false",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean",
