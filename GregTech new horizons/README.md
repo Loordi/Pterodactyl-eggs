@@ -10,6 +10,8 @@ This egg automates much of the manual setup described in the official documentat
 just change the version and reinstall to update.
 JourneyMapServer data is kept when reinstalled.
 
+!! If updating this egg from earlier version, remember to manually change env values to true/false and updating the startup command for game servers installed using old egg. !!
+
 ⚠️ Always back up your world before reinstalling!
 
 Added version with Twist space technology.
