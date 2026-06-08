@@ -8,7 +8,11 @@ Requires github token.
 
 This egg automates much of the manual setup described in the official documentation.
 just change the version and reinstall to update.
-JourneyMapServer data is kept when reinstalled.
+
+JourneyMapServer data, ops.json, whitelist.json, banned-players.json, banned-ips.json and serverutilities/server/ranks.txt is kept when reinstalled.
+REMEMBER TO ENABLE SERVERUTIL RANKS AFTER REINSTALL!
+/Files/serverutilities/serverutilities.cfg
+
 
 !! If updating this egg from earlier version, remember to manually change env values to true/false and updating the startup command for game servers installed using old egg. !!
 
