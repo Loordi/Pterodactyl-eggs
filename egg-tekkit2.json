@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-09-09T22:11:49+03:00",
+    "exported_at": "2026-09-02T10:19:48+03:00",
     "name": "Tekkit 2",
     "author": "looordi@orkenstein.com",
     "description": "Tekkit 2 server egg\r\n\r\nhttps:\/\/www.technicpack.net\/modpack\/tekkit-2.1935271",
@@ -13,24 +13,21 @@
         "java_version"
     ],
     "docker_images": {
-        "ghcr.io\/pterodactyl\/yolks:java_8": "ghcr.io\/pterodactyl\/yolks:java_8",
-        "ghcr.io\/pterodactyl\/yolks:java_11": "ghcr.io\/pterodactyl\/yolks:java_11",
-        "ghcr.io\/pterodactyl\/yolks:java_16": "ghcr.io\/pterodactyl\/yolks:java_16",
-        "ghcr.io\/pterodactyl\/yolks:java_17": "ghcr.io\/pterodactyl\/yolks:java_17"
+        "Java8": "ghcr.io\/pterodactyl\/yolks:java_8"
     },
     "file_denylist": [],
-    "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar minecraft_server.1.12.2.jar",
+    "startup": "java -server  -Xms128M -Xmx{{SERVER_MEMORY}}M -Dfml.queryResult=confirm -jar forge.jar nogui",
     "config": {
         "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
-        "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
+        "startup": "{\r\n    \"done\": \"Server tick complete! \"\r\n}",
         "logs": "{}",
         "stop": "stop"
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Forge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -sS https:\/\/servers.technicpack.net\/Technic\/servers\/tekkit-2\/Tekkit-2_Server_$MODPACK_VERSION.zip -o Tekkit-2_Server_$MODPACK_VERSION.zip\r\n\r\nunzip Tekkit-2_Server_$MODPACK_VERSION.zip\r\n\r\nrm -rf Tekkit-2_Server_$MODPACK_VERSION.zip\r\n\r\nrm LaunchServer.bat\r\n\r\nrm LaunchServer.sh\r\n\r\nif [ ! -f server.properties ]; then\r\n    echo -e \"Downloading MC server.properties\"\r\n    curl -o server.properties https:\/\/raw.githubusercontent.com\/parkervcp\/eggs\/master\/game_eggs\/minecraft\/java\/server.properties\r\nfi",
-            "container": "ghcr.io\/pterodactyl\/installers:alpine",
-            "entrypoint": "ash"
+            "script": "#!\/bin\/bash\r\n# Tekkit Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt -y install curl zip unzip\r\n\r\nmkdir -p \/mnt\/server\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -fsSL https:\/\/servers.technicpack.net\/Technic\/servers\/tekkit-2\/Tekkit-2_Server_$MODPACK_VERSION.zip -o Tekkit-2_Server_$MODPACK_VERSION.zip\r\n\r\nunzip -o Tekkit-2_Server_$MODPACK_VERSION.zip\r\n\r\nrm -f Tekkit-2_Server_$MODPACK_VERSION.zip\r\n\r\nrm -f RestoreBackup.bat\r\nrm -f LaunchServer.bat\r\nrm -f LaunchServer.sh\r\nrm -f RestoreBackup.sh\r\n\r\nmv forge-1.12.2-*.jar forge.jar\r\n\r\nif [ ! -f server.properties ]; then\r\n    echo -e \"Downloading MC server.properties\"\r\n    curl -fsSL -o server.properties https:\/\/raw.githubusercontent.com\/ptero-eggs\/game-eggs\/main\/minecraft\/java\/server.properties\r\nfi\r\n\r\necho \"done\"",
+            "container": "debian:bullseye-slim",
+            "entrypoint": "bash"
         }
     },
     "variables": [
@@ -38,10 +35,10 @@
             "name": "Modpack Version",
             "description": "",
             "env_variable": "MODPACK_VERSION",
-            "default_value": "v1.0.3",
+            "default_value": "v1.2.6",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:20",
+            "rules": "required|string|max:10",
             "field_type": "text"
         }
     ]
