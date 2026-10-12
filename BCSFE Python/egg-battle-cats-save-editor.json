@@ -1,0 +1,52 @@
+{
+  "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-10-12T14:39:56+03:00",
+  "name": "Battle Cats save editor",
+  "author": "looordi@orkenstein.com",
+  "description": "Battle Cats Save File Editor (BCSFE). does not require an allocation port.",
+  "features": [],
+  "docker_images": {
+    "Python 3.12": "ghcr.io/parkervcp/yolks:python_3.12"
+  },
+  "file_denylist": [],
+  "startup": "export PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 PIP_DISABLE_PIP_VERSION_CHECK=1; cd /home/container || exit 1; if [ ! -x venv/bin/python ] || [ ! -f bcsfe-console.py ]; then echo \"[BCSFE] Installation missing. Run Reinstall in the panel.\" >&2; exit 1; fi; export PATH=\"/home/container/venv/bin:$PATH\"; if [ \"${UPDATE_ON_START}\" = \"1\" ]; then venv/bin/python -m pip install --no-input --upgrade \"${BCSFE_PACKAGE}\" || exit 1; venv/bin/python -m pip check || exit 1; fi; exec venv/bin/python -u bcsfe-console.py",
+  "config": {
+    "files": "{}",
+    "startup": "{\"done\":\"[BCSFE] Console ready.\"}",
+    "logs": "{}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\nset -euo pipefail\ncd /mnt/server\nexport PIP_DISABLE_PIP_VERSION_CHECK=1\npackage=\"${BCSFE_PACKAGE:-bcsfe==3.6.0}\"\nif [[ ! \"$package\" =~ ^bcsfe(==[0-9]+\\.[0-9]+\\.[0-9]+)?$ ]]; then\n    echo \"[BCSFE] Package must be bcsfe or bcsfe==X.Y.Z.\" >&2\n    exit 1\nfi\n# Match the runtime image's Python and Debian release; do not remove user data.\npython -m venv --copies venv\n./venv/bin/python -m pip install --no-input --upgrade pip setuptools wheel\n./venv/bin/python -m pip install --no-input --upgrade \"$package\"\n./venv/bin/python -m pip check\ncat > bcsfe-console.py <<'BCSFE_CONSOLE_PY'\n\"\"\"Adapt BCSFE's interactive prompts to Wings' line-oriented console.\"\"\"\n\nimport builtins\nimport runpy\nimport sys\n\n\ndef main():\n    original_input = builtins.input\n    ready = False\n\n    def console_input(prompt=\"\"):\n        nonlocal ready\n        if not ready:\n            # Signal readiness only when BCSFE has initialized and awaits input.\n            print(\"[BCSFE] Console ready.\", flush=True)\n            ready = True\n        # input(prompt) flushes Python, but has no newline: Wings cannot publish\n        # that final line until another command produces a newline. Terminate\n        # the prompt BEFORE blocking. An empty prompt also completes partial output.\n        print(prompt, flush=True)\n        return original_input()\n\n    sys.stdout.reconfigure(line_buffering=True, write_through=True)\n    sys.stderr.reconfigure(line_buffering=True, write_through=True)\n    builtins.input = console_input\n    sys.argv = [\"bcsfe\", *sys.argv[1:]]\n    try:\n        runpy.run_module(\"bcsfe\", run_name=\"__main__\", alter_sys=True)\n    finally:\n        builtins.input = original_input\n\n\nif __name__ == \"__main__\":\n    main()\nBCSFE_CONSOLE_PY\necho \"[BCSFE] Installed. Start the server and enter menu choices in Console.\"\n",
+      "container": "python:3.12-slim-bookworm",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "BCSFE Package",
+      "description": "Default: tested bcsfe==3.6.0. Use bcsfe for the latest stable release, or bcsfe==X.Y.Z to pin a stable version. Changing this requires Reinstall or Update On Start=1.",
+      "env_variable": "BCSFE_PACKAGE",
+      "default_value": "bcsfe==3.6.0",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:64|regex:/^bcsfe(==[0-9]+\\.[0-9]+\\.[0-9]+)?$/",
+      "field_type": "text"
+    },
+    {
+      "name": "Update On Start",
+      "description": "Set to 1 to run pip install --upgrade before launching BCSFE. Set to 0 to use the version installed during server install.",
+      "env_variable": "UPDATE_ON_START",
+      "default_value": "0",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|boolean",
+      "field_type": "text"
+    }
+  ]
+}
