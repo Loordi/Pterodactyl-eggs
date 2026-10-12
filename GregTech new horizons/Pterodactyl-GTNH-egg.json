@@ -4,10 +4,10 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2026-09-07T09:57:21+03:00",
+    "exported_at": "2026-10-12T10:28:04+03:00",
     "name": "GregTech: New Horizons",
     "author": "looordi@orkenstein.com",
-    "description": "Universal Pterodactyl egg for modern-Java GTNH server packs. Supports stable, beta, release-candidate and daily builds, with Java 17, 21, 25 and 26 container images.\n\nChange the requested version and reinstall to update. The installer preserves the world and selected administrator\/player data, but replaces the modpack's config, libraries and mods. Always create a full backup before reinstalling.\n\nDaily builds are downloaded from the official GTNH Daily Builds releases and do not require a GitHub token.\n\nMore info:\nhttps:\/\/wiki.gtnewhorizons.com\/wiki\/Server_Setup#Server_Update\nhttps:\/\/www.gtnewhorizons.com\/downloads\/",
+    "description": "Universal Pterodactyl GTNH egg. Supports stable, beta, release-candidate and daily modern-Java GTNH packs, with Java 17, 21, 25 and 26 container images.\n\nEnter a GTNH version, for example 2.8.4, 2.9.0-beta-3 or 2.9.0-RC-2, or use latest for the newest stable release. GTVERSION is ignored when daily builds are enabled. Daily builds do not require a GitHub token.\n\nChange the requested version and reinstall to update. The installer preserves the world and selected administrator\/player data, but replaces the modpack's config, libraries and mods. Always create a full server backup before reinstalling. Custom mods and other modpack configuration are replaced.\n\nGTNH downloads: https:\/\/www.gtnewhorizons.com\/downloads\/\nServer setup and update guide: https:\/\/wiki.gtnewhorizons.com\/wiki\/Server_Setup#Server_Update",
     "features": [
         "eula"
     ],
@@ -35,112 +35,12 @@
     "variables": [
         {
             "name": "Modpack version",
-            "description": "GTNH version for the modern-Java server pack. Defaults to latest, which resolves to the newest stable release. You can also pin a version such as 2.8.4 or 2.9.0-beta-2.",
+            "description": "Enter a GTNH version, for example 2.8.4, 2.9.0-beta-3 or 2.9.0-RC-2, or use latest for the newest stable release. Ignored when daily builds are enabled.",
             "env_variable": "GTVERSION",
             "default_value": "latest",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required",
-            "field_type": "text"
-        },
-        {
-            "name": "World Name",
-            "description": "Change the default world name",
-            "env_variable": "LEVEL_NAME",
-            "default_value": "World",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|string|max:20",
-            "field_type": "text"
-        },
-        {
-            "name": "Hardcore Mode",
-            "description": "Enable Hardcore Mode for the world",
-            "env_variable": "SERVER_HARDCORE",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|in:true,false",
-            "field_type": "text"
-        },
-        {
-            "name": "Max Players",
-            "description": "Set a total server player limit",
-            "env_variable": "MAX_PLAYERS",
-            "default_value": "20",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|numeric",
-            "field_type": "text"
-        },
-        {
-            "name": "Message of the Day",
-            "description": "Set the server MOTD",
-            "env_variable": "SERVER_MOTD",
-            "default_value": "GT:New Horizons",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "nullable|string",
-            "field_type": "text"
-        },
-        {
-            "name": "Server Seed",
-            "description": "Set a custom seed for the World map",
-            "env_variable": "SERVER_SEED",
-            "default_value": "",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "nullable|string",
-            "field_type": "text"
-        },
-        {
-            "name": "Server Whitelist",
-            "description": "Enable\/Disable Server Whitelist",
-            "env_variable": "SERVER_WHITELIST",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|in:true,false",
-            "field_type": "text"
-        },
-        {
-            "name": "Query Port",
-            "description": "Set the query port for the server",
-            "env_variable": "SERVER_QUERY_PORT",
-            "default_value": "25565",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|numeric",
-            "field_type": "text"
-        },
-        {
-            "name": "Query Status",
-            "description": "Set server query status enabled\/disabled",
-            "env_variable": "SERVER_QUERY",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|in:true,false",
-            "field_type": "text"
-        },
-        {
-            "name": "Rcon Status",
-            "description": "Enable or disable server rcon",
-            "env_variable": "SERVER_RCON",
-            "default_value": "false",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|in:true,false",
-            "field_type": "text"
-        },
-        {
-            "name": "Server Rcon Port",
-            "description": "Set the server rcon port",
-            "env_variable": "SERVER_RCON_PORT",
-            "default_value": "25575",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|numeric",
             "field_type": "text"
         },
         {
@@ -161,6 +61,106 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "string|max:10|required",
+            "field_type": "text"
+        },
+        {
+            "name": "Message of the Day",
+            "description": "Set the server MOTD",
+            "env_variable": "SERVER_MOTD",
+            "default_value": "GT:New Horizons",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Max Players",
+            "description": "Set a total server player limit",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "20",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Whitelist",
+            "description": "Enable\/Disable Server Whitelist",
+            "env_variable": "SERVER_WHITELIST",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:true,false",
+            "field_type": "text"
+        },
+        {
+            "name": "World Name",
+            "description": "Change the default world name",
+            "env_variable": "LEVEL_NAME",
+            "default_value": "World",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Seed",
+            "description": "Set a custom seed for the World map",
+            "env_variable": "SERVER_SEED",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Hardcore Mode",
+            "description": "Enable Hardcore Mode for the world",
+            "env_variable": "SERVER_HARDCORE",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:true,false",
+            "field_type": "text"
+        },
+        {
+            "name": "Query Status",
+            "description": "Set server query status enabled\/disabled",
+            "env_variable": "SERVER_QUERY",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:true,false",
+            "field_type": "text"
+        },
+        {
+            "name": "Query Port",
+            "description": "Set the query port for the server",
+            "env_variable": "SERVER_QUERY_PORT",
+            "default_value": "25565",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Rcon Status",
+            "description": "Enable or disable server rcon",
+            "env_variable": "SERVER_RCON",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:true,false",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Rcon Port",
+            "description": "Set the server rcon port",
+            "env_variable": "SERVER_RCON_PORT",
+            "default_value": "25575",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
             "field_type": "text"
         }
     ]
