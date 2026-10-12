@@ -1,6 +1,6 @@
 # GregTech: New Horizons Pterodactyl Egg
 
-Use [`Pterodactyl-GTNH-egg.json`](Pterodactyl-GTNH-egg.json) for new installations. It supports stable, beta, release-candidate and daily GTNH server packs with modern Java. Daily builds do not require a GitHub token.
+Use [`Pterodactyl-GTNH-egg.json`](Pterodactyl-GTNH-egg.json) for new installations. It supports stable, beta, release-candidate and daily GTNH server packs with modern Java.
 
 Java 17, 21, 25 and 26 images are included. Choose a Java version within the range shown in the selected server pack's filename. The startup command sets the maximum Java heap to 95% of the container memory limit and automatically confirms Forge/FML update prompts.
 
